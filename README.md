@@ -1,68 +1,72 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Задача
 
-## Available Scripts
+Создание SPA, реализующего CRUD-функционал для сущности "Кролик"
+Требования:
 
-In the project directory, you can run:
+    Использование фронтенд-фреймворка (react/vue/angular)
+    Приложение должно быть совместимо с основными версиями популярных браузеров (Chrome, Firefox, Safari, Opera, Edge)
 
-### `npm start`
+Описание:
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Приложение должно состоять из следующих страниц:
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+    авторизация
+    создание кролика
+    редактирование кролика
+    список кроликов (в списке должна быть возможность удаления)
 
-### `npm test`
+Требования к дизайну отстутствуют, адаптивная версия не требуется, допускается использование дополнительных библиотек для быстрого создания UI на выбор соискателя. Так же, в API допущена уязвимость, обнаружение и эксплуатация которой будет дополнительным бонусом (достаточно в текстовом виде). Результат ожидается в виде git-репозитория.
+Техническая информация:
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Адрес API: http://conquest.weekendads.ru
 
-### `npm run build`
+Приложению предстоит общаться с REST API, реализующим CRUD-функционал для сущности "Кролик". API имеет stateless-модель аутентификации. Аутентификация производится посредством передачи токена в заголовке запроса: Authorization: Bearer <token> Токен получается с помощью запроса следующего вида (здесь и далее HTTP-запросы представленны в виде curl-команды):
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+curl -X POST \
+  http://conquest.weekendads.ru/login_check \
+  -H 'Content-Type: application/json' \
+  -d '{"username":"<username>","password":"<password>"}'
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+Где username и password -- предоставленные соискателю данные.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Сервер пришлёт ответ следующего вида:
 
-### `npm run eject`
+{
+    "token": "<token>"
+}
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Где поле token -- JWT, содержащий в себе основную информцию о пользователе и время создания/истечения токена. Дополнительным плюсом будет отображение в каком-либо месте имени пользователя, полученного из токена.
+Описание работы с методами API
+GetRabbitList, получение списка кроликов:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+curl -X GET \
+  http://conquest.weekendads.ru/rabbit/list \
+  -H 'Authorization: Bearer <token>' \
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+CreateRabbit, создание кролика:
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+curl -X POST \
+  http://conquest.weekendads.ru/rabbit \
+  -H 'Authorization: Bearer <token>' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d 'rabbit[name]=<name>&rabbit[weight]=<weight>'
 
-## Learn More
+Где name -- имя кролика (строка), а weight -- его вес (число с плавающей точкой)
+UpdateRabbit, изменение кролика:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+curl -X POST \
+  http://conquest.weekendads.ru/rabbit/<rabbit.id> \
+  -H 'Authorization: Bearer <token>' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d 'rabbit[name]=<name>&rabbit[weight]=<weight>'
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Где rabbit.id -- id кролика (целое число), name -- имя кролика (строка), а weight -- его вес (число с плавающей точкой).
+DeleteRabbit, удаление кролика:
 
-### Code Splitting
+curl -X DELETE \
+  http://conquest.weekendads.ru/rabbit/<rabbit.id> \
+  -H 'Authorization: Bearer <token>' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d 'rabbit[name]=<name>&rabbit[weight]=<weight>'
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+Где rabbit.id -- id кролика (целое число), name -- имя кролика (строка), а weight -- его вес (число с плавающей точкой).

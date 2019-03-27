@@ -1,0 +1,28 @@
+.desk__item {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 5px;
+  &:hover {
+    background-color: aliceblue;
+  }
+}
+
+.desk__index {
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.desk__name {
+  margin-right: 15px;
+  width: 100%;
+}
+
+.desk__weight {
+  margin-right: 10px;
+}
+
+.desk__remove {
+  color: red;
+  cursor: pointer;
+}
